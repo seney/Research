@@ -31,12 +31,7 @@ public class TransitionActivity extends AppCompatActivity {
                         intent.putExtra(ContactDetailActivity.ID, Contact.CONTACTS[position].getId());
 
                         ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(
-                                // the context of the activity
                                 TransitionActivity.this,
-
-                                // For each shared element, add to this method a new Pair item,
-                                // which contains the reference of the view we are transitioning *from*,
-                                // and the value of the transitionName attribute
                                 new Pair<View, String>(view.findViewById(R.id.CONTACT_circle),
                                         getString(R.string.transition_name_circle)),
                                 new Pair<View, String>(view.findViewById(R.id.CONTACT_name),
@@ -47,5 +42,6 @@ public class TransitionActivity extends AppCompatActivity {
                         ActivityCompat.startActivity(TransitionActivity.this, intent, options.toBundle());
                     }
                 }));
+
     }
 }
