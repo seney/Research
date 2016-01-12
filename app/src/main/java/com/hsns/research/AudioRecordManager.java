@@ -67,7 +67,8 @@ public class AudioRecordManager {
     public void startPlaying() {
         mediaPlayer = new MediaPlayer();
         try {
-            audioRecordManagerListener.onStartPlaying(fileName);
+            if (audioRecordManagerListener != null)
+                audioRecordManagerListener.onStartPlaying(fileName);
             mediaPlayer.setDataSource(fileName);
             mediaPlayer.prepare();
             mediaPlayer.start();
@@ -78,13 +79,15 @@ public class AudioRecordManager {
     }
 
     public void stopPlaying() {
-        audioRecordManagerListener.onStopPlaying(fileName);
+        if (audioRecordManagerListener != null)
+            audioRecordManagerListener.onStopPlaying(fileName);
         mediaPlayer.release();
         mediaPlayer = null;
     }
 
     public void startRecording() {
-        audioRecordManagerListener.onStartRecording();
+        if (audioRecordManagerListener != null)
+            audioRecordManagerListener.onStartRecording();
         mediaRecorder = new MediaRecorder();
         mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
         mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
@@ -101,7 +104,8 @@ public class AudioRecordManager {
     }
 
     public void stopRecording() {
-        audioRecordManagerListener.onStopRecording();
+        if (audioRecordManagerListener != null)
+            audioRecordManagerListener.onStopRecording();
         mediaRecorder.stop();
         mediaRecorder.release();
         mediaRecorder = null;
@@ -117,8 +121,11 @@ public class AudioRecordManager {
 
     public interface AudioRecordManagerListener {
         void onStartRecording();
+
         void onStopRecording();
+
         void onStartPlaying(String fileName);
+
         void onStopPlaying(String fileName);
     }
 }

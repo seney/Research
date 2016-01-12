@@ -230,5 +230,6 @@ public class VolleyActivity extends AppCompatActivity {
         mImageLoader = VolleySingleton.getInstance(this).getImageLoader();
 
         mImageView.setImageUrl(IMAGE_URL, mImageLoader);
+
     }
 }

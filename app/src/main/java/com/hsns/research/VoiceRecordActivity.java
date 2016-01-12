@@ -2,6 +2,10 @@ package com.hsns.research;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.transition.Fade;
+import android.transition.Slide;
+import android.transition.TransitionInflater;
+import android.transition.Visibility;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -24,6 +28,12 @@ public class VoiceRecordActivity extends AppCompatActivity implements AudioRecor
 
         initViews();
         initListeners();
+        setupWindowAnimations();
+    }
+
+    private void setupWindowAnimations() {
+        Visibility enterTransition = buildEnterTransition();
+        getWindow().setEnterTransition(enterTransition);
     }
 
     private void initListeners() {
@@ -73,5 +83,19 @@ public class VoiceRecordActivity extends AppCompatActivity implements AudioRecor
     public void onStopPlaying(String fileName) {
         Toast.makeText(this, "Stop Playing : " + fileName, Toast.LENGTH_LONG).show();
         buttonPlaying.setText("START PLAYING");
+    }
+
+    private Visibility buildEnterTransition() {
+        Fade enterTransition = new Fade();
+        enterTransition.setDuration(500);
+        // This view will not be affected by enter transition animation
+//        enterTransition.excludeTarget(R.id.buttonRec, true);
+        return enterTransition;
+    }
+
+    private Visibility buildReturnTransition() {
+        Visibility enterTransition = new Slide();
+        enterTransition.setDuration(500);
+        return enterTransition;
     }
 }
