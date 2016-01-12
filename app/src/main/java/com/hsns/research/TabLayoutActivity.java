@@ -32,6 +32,7 @@ public class TabLayoutActivity extends AppCompatActivity {
         mTabLayout.addTab(mTabLayout.newTab().setText("Tab3"));
         mViewPager.setAdapter(new TestPagerAdapter());
         mTabLayout.setupWithViewPager(mViewPager);
+
     }
 
     private void init() {

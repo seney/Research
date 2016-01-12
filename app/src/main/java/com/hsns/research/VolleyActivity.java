@@ -17,8 +17,10 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.NetworkImageView;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
@@ -31,6 +33,11 @@ import java.util.Map;
 public class VolleyActivity extends AppCompatActivity {
     private static VolleyActivity mInstance = null;
     private RequestQueue mRequestQueue;
+
+    ImageLoader mImageLoader;
+    NetworkImageView mImageView;
+    private static final String IMAGE_URL =
+            "http://dreamatico.com/data_images/girl/girl-8";
 
     public static VolleyActivity getInstance() {
         if (mInstance == null) {
@@ -86,6 +93,7 @@ public class VolleyActivity extends AppCompatActivity {
                 return true; // -> always yes
             }
         });*/
+        mRequestQueue = VolleySingleton.getInstance(this).getRequestQueue();
         mRequestQueue.cancelAll("GET");
     }
 
@@ -114,7 +122,8 @@ public class VolleyActivity extends AppCompatActivity {
         });
 
         stringRequest.setTag("GET");
-        mRequestQueue.add(stringRequest);
+//        mRequestQueue.add(stringRequest);
+        VolleySingleton.getInstance(this).addToRequestQueue(stringRequest);
     }
 
     public void requestJsonPost(View view) {
@@ -151,7 +160,9 @@ public class VolleyActivity extends AppCompatActivity {
                 return params;
             }
         };
-        mRequestQueue.add(postRequest);
+//        mRequestQueue.add(postRequest);
+
+        VolleySingleton.getInstance(this).addToRequestQueue(postRequest);
     }
 
     public void requestJsonGet(View view) {
@@ -182,7 +193,8 @@ public class VolleyActivity extends AppCompatActivity {
 
 
         jsonRequest.setTag("GET");
-        mRequestQueue.add(jsonRequest);
+//        mRequestQueue.add(jsonRequest);
+        VolleySingleton.getInstance(this).addToRequestQueue(jsonRequest);
     }
 
     public void requestImage(View view) {
@@ -208,6 +220,15 @@ public class VolleyActivity extends AppCompatActivity {
 
         imgRequest.setTag("GET");
 
-        mRequestQueue.add(imgRequest);
+//        mRequestQueue.add(imgRequest);
+        VolleySingleton.getInstance(this).addToRequestQueue(imgRequest);
+    }
+
+    public void requestNetworkImage(View view) {
+        mImageView = (NetworkImageView) findViewById(R.id.imageView1);
+
+        mImageLoader = VolleySingleton.getInstance(this).getImageLoader();
+
+        mImageView.setImageUrl(IMAGE_URL, mImageLoader);
     }
 }
