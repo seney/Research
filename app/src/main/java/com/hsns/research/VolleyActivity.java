@@ -9,6 +9,7 @@ import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -19,10 +20,12 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.ImageRequest;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.NetworkImageView;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.hsns.research.volley.utils.VolleyJsonObjectRequest;
+import com.hsns.research.volley.utils.VolleyRequestListener;
+import com.hsns.research.volley.utils.VolleySingleton;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -122,7 +125,6 @@ public class VolleyActivity extends AppCompatActivity {
         });
 
         stringRequest.setTag("GET");
-//        mRequestQueue.add(stringRequest);
         VolleySingleton.getInstance(this).addToRequestQueue(stringRequest);
     }
 
@@ -134,7 +136,9 @@ public class VolleyActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(String response) {
                         try {
+                            Log.i("MyLog", response.toString());
                             JSONObject jsonResponse = new JSONObject(response).getJSONObject("form");
+
                             String site = jsonResponse.getString("site"),
                                     network = jsonResponse.getString("network");
                             System.out.println("Site: " + site + "\nNetwork: " + network);
@@ -150,17 +154,15 @@ public class VolleyActivity extends AppCompatActivity {
                         error.printStackTrace();
                     }
                 }
-        ) {
+        ){
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
-                // the POST parameters:
                 params.put("site", "code");
                 params.put("network", "tutsplus");
                 return params;
             }
         };
-//        mRequestQueue.add(postRequest);
 
         VolleySingleton.getInstance(this).addToRequestQueue(postRequest);
     }
@@ -168,46 +170,28 @@ public class VolleyActivity extends AppCompatActivity {
     public void requestJsonGet(View view) {
         String url = "http://httpbin.org/get?site=code&network=tutsplus";
 
-        JsonObjectRequest jsonRequest = new JsonObjectRequest
-                (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        // the response is already constructed as a JSONObject!
-                        try {
-                            response = response.getJSONObject("args");
-                            String site = response.getString("site"),
-                                    network = response.getString("network");
-                            System.out.println("Site: " + site + "\nNetwork: " + network);
-                            ((TextView) findViewById(R.id.textView)).setText("Site: " + site + "\nNetwork: " + network);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }, new Response.ErrorListener() {
+        VolleyJsonObjectRequest volleyJsonObjectRequest = new VolleyJsonObjectRequest(url, Request.Method.GET, this);
+        volleyJsonObjectRequest.request(new VolleyRequestListener() {
+            @Override
+            public void onResponse(Object response) {
+                Log.i("MyLog", response.toString());
+            }
 
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        error.printStackTrace();
-                    }
-                });
+            @Override
+            public void onError(Object error) {
 
-
-        jsonRequest.setTag("GET");
-//        mRequestQueue.add(jsonRequest);
-        VolleySingleton.getInstance(this).addToRequestQueue(jsonRequest);
+            }
+        });
     }
 
     public void requestImage(View view) {
         String url = "http://dreamatico.com/data_images/girl/girl-8.jpg";
-//        String url = "http://i.imgur.com/Nwk25LA.jpg";
         final ImageView mImageView = (ImageView) findViewById(R.id.imageView);
 
         ImageRequest imgRequest = new ImageRequest(url,
                 new Response.Listener<Bitmap>() {
                     @Override
                     public void onResponse(Bitmap response) {
-
-//                        response = getRoundedCroppedBitmap(response, mImageView.getHeight());
                         mImageView.setImageBitmap(response);
                     }
                 }, 0, 0, ImageView.ScaleType.CENTER_CROP, Bitmap.Config.ARGB_8888, new Response.ErrorListener() {
@@ -220,7 +204,6 @@ public class VolleyActivity extends AppCompatActivity {
 
         imgRequest.setTag("GET");
 
-//        mRequestQueue.add(imgRequest);
         VolleySingleton.getInstance(this).addToRequestQueue(imgRequest);
     }
 
@@ -230,6 +213,5 @@ public class VolleyActivity extends AppCompatActivity {
         mImageLoader = VolleySingleton.getInstance(this).getImageLoader();
 
         mImageView.setImageUrl(IMAGE_URL, mImageLoader);
-
     }
 }

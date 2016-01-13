@@ -1,4 +1,4 @@
-package com.hsns.research;
+package com.hsns.research.volley.utils;
 
 import android.content.Context;
 import android.graphics.Bitmap;
